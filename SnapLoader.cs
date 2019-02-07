@@ -167,7 +167,7 @@ public class SnapLoader
                         if (!faceData[cmesh].ContainsKey(cmaterial))
                             faceData[cmesh].Add(cmaterial, new List<Vector3Int>());
 
-                        while (splitStart < sb.Length && char.IsDigit(sb[splitStart]))
+                        while (splitStart < sb.Length && (char.IsDigit(sb[splitStart]) || sb[splitStart] == '-'))
                         {
                             int vertexIndex = GetInt(sb, ref splitStart, ref sbFloat) - 1;
 
@@ -187,7 +187,10 @@ public class SnapLoader
                                 if (uvIndex < 0) uvIndex = (uvs.Count - Math.Abs(uvIndex)) + 1;
                             }
 
-                            tfd.Add(new Vector3Int(vertexIndex, uvIndex, GetInt(sb, ref splitStart, ref sbFloat) - 1));
+                            int normIndex = GetInt(sb, ref splitStart, ref sbFloat) - 1;
+                            if (normIndex < 0) normIndex = (normals.Count - Math.Abs(normIndex)) + 1;
+
+                            tfd.Add(new Vector3Int(vertexIndex, uvIndex, normIndex));
 
                             j++;
                             faceDataCount++;
@@ -211,9 +214,6 @@ public class SnapLoader
                             j++;
                         }
                     }
-                    /* Material Used by the Faces Below current line of the .obj file
-                     * until said otherwise by next "usemtl" line
-                     */
                     else if (sb[0] == 'u' && sb[1] == 's' && sb[2] == 'e' && sb[3] == 'm')   //(sb[0] == "u0s1e2m3t4l5 67")
                     {
                         sbFloat.Remove(0, sbFloat.Length);
@@ -836,6 +836,10 @@ public class SnapLoader
     private static int GetInt(StringBuilder sb, ref int start, ref StringBuilder sbInt)
     {
         sbInt.Remove(0, sbInt.Length);
+        int multiplyer = 1;
+
+        if (sb[start] == '-') { multiplyer = -1; start++; }
+
         while (start < sb.Length &&
                (char.IsDigit(sb[start])))
         {
@@ -844,7 +848,7 @@ public class SnapLoader
         }
         start++;
 
-        return IntParseFast(sbInt);
+        return IntParseFast(sbInt) * multiplyer;
     }
     
     private static float[] GenerateLookupTable()
