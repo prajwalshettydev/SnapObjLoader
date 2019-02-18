@@ -7,6 +7,7 @@ So I improvised it so that it can be used in multiple situations or with complex
 
 What the SnapObjLoader Does:
 
+* The Whole loading happens in Background thread so even the largest .obj files wont freeze the syste while loading
 * Loads obj file with any number of submeshes and meshes
 * Loads Materials and textures for each submesh,
 * Supports PBR Textures if available,
