@@ -1,5 +1,5 @@
 # SnapObjLoader
-Fastest Way to To Load the .obj File in Unity,
+Fastest Way to To Load the .obj File in Unity during runtime, loads .obj files faster than Thanos' snap.
 
 Inspired by the FastObjImporter http://wiki.unity3d.com/index.php/FastObjImporter, which only used to support blender's .obj exported file, with one mesh and one submesh.
 
