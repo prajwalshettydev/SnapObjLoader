@@ -14,3 +14,4 @@ What the SnapObjLoader Does:
 * Supports mesh with negative face indices
 * Support Skecthup exported mesh with non numeric characters
 * Supports Import time resetting of mesh's scale
+* On Requirement Flips the Asset in X-axis, this Helps to stay in sync with the assets exported from major 3d modeling software like 3ds max/blender, since all of them use the right-handed coordinate system whereas unity uses the left-handed coordinate system
