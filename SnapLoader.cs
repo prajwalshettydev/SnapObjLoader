@@ -1,6 +1,13 @@
-﻿/*
-(C) 2018 prajwalshetty2018@gmail.com
-DO NOT USE PARTS OF, OR THE ENTIRE SCRIPT, AND CLAIM AS YOUR OWN WORK
+/*
+ * (C) 2018 prajwalshetty2018@gmail.com
+ * 
+ * Faster File .obj Parsing from: 
+ * "Marc Kusters (Nighteyes)" (http://wiki.unity3d.com/index.php/FastObjImporter) 
+ *  
+ * Material and texture importer from:
+ * "AARO4130" (https://assetstore.unity.com/packages/tools/modeling/runtime-obj-importer-49547)
+ * 
+ * DO NOT USE PARTS OF, OR THE ENTIRE SCRIPT, AND CLAIM AS YOUR OWN WORK
 */
 
 using System;
@@ -18,6 +25,13 @@ public class SnapLoader
 {
     public static bool splitByMaterial = false;
     public static string[] searchPaths = new string[] { "", "%FileName%_Textures" + Path.DirectorySeparatorChar };
+    
+    /// <summary>
+    /// Should the obj flip in the x-axis, set it to -1 if yes, 
+    /// Helps to stay in sync with the assets exported in makor 3d modelling softwares like 3ds max/blender,
+    /// since all of them use RHR where as unity uses LHR
+    /// </summary>
+    private static int xAxisFlip = -1;
     
     struct OBJFace
     {
@@ -153,7 +167,7 @@ public class SnapLoader
                         int splitStart = 2;
                         if (sb[2] == ' ') splitStart++;
 
-                        vertices.Add(new Vector3(GetFloat(sb, ref splitStart, ref sbFloat),
+                        vertices.Add(new Vector3(GetFloat(sb, ref splitStart, ref sbFloat) * xAxisFlip,
                             GetFloat(sb, ref splitStart, ref sbFloat), GetFloat(sb, ref splitStart, ref sbFloat)) * importScale);
                         if(vertices[vertices.Count - 1].VectorApproxEquals(Vector3.zero)) { Debug.LogError("Got 000 mate at, " + vertices[vertices.Count - 1]); }
                     }
@@ -207,9 +221,15 @@ public class SnapLoader
                          */
                         while (j + 2 < info)
                         {
-                            faceData[cmesh][cmaterial].Add(tfd[0]);
-                            faceData[cmesh][cmaterial].Add(tfd[j]);
-                            faceData[cmesh][cmaterial].Add(tfd[j + 1]);
+                            if (xAxisFlip == -1){
+                                faceData[cmesh][cmaterial].Add(tfd[j + 1]);
+                                faceData[cmesh][cmaterial].Add(tfd[j]);
+                                faceData[cmesh][cmaterial].Add(tfd[0]);
+                            } else {
+                                faceData[cmesh][cmaterial].Add(tfd[0]);
+                                faceData[cmesh][cmaterial].Add(tfd[j]);
+                                faceData[cmesh][cmaterial].Add(tfd[j + 1]);
+                            }
 
                             j++;
                         }
