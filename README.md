@@ -7,7 +7,6 @@ So I improvised it so that it can be used in multiple situations or with complex
 
 What the SnapObjLoader Does:
 
-* The Whole loading happens in the Background thread so even the largest .obj files wont freeze the system while loading
 * Loads obj file with any number of submeshes and meshes
 * Loads Materials and textures for each submesh,
 * Supports PBR Textures if available,
@@ -15,3 +14,4 @@ What the SnapObjLoader Does:
 * Support Skecthup exported mesh with non numeric characters
 * Supports Import time resetting of mesh's scale
 * On Requirement Flips the Asset in X-axis, this Helps to stay in sync with the assets exported from major 3d modeling software like 3ds max/blender, since all of them use the right-handed coordinate system whereas unity uses the left-handed coordinate system
+* Most of the loading happens in the Background thread so even the largest .obj files wont freeze the system while loading
