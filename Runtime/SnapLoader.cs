@@ -27,12 +27,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-#if UNITY_EDITOR
-#endif
 
-namespace Loader3DC.Obj
+namespace SnapObj
 {
-    public class ObjLoader
+    public class SnapLoader
     {
         public static bool splitByMaterial = false;
         public static string[] searchPaths = new string[] { "", "%FileName%_Textures" + Path.DirectorySeparatorChar };

@@ -1,0 +1,17 @@
+{
+    "name": "com.prajwal.snap-obj",
+    "version": "1.0.1",
+    "displayName": "Snap Obj",
+    "description": "Runtime Obj file load",
+    "unity": "2019.3",
+    "dependencies": {},
+    "keywords": [
+      "3d-file",
+      "obj"
+    ],
+    "author": {
+        "name": "Prajwal Shetty",
+        "email": "prajwalshetty3000@gmail.com",
+        "url": "https://github.com/prajwalshettydev"
+    }
+  }
