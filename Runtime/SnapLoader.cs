@@ -27,7 +27,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-
+using UnityEngine.Rendering;
+#if USING_URP
+using UnityEngine.Rendering.Universal;
+#endif
 namespace SnapObj
 {
     public class SnapLoader
@@ -721,7 +724,7 @@ namespace SnapObj
             var allTextures = Directory.GetFiles(mtlFileDirectory, "*.*", SearchOption.AllDirectories) //Cache Texture Location Data
                  .Where(s => ext.Contains(Path.GetExtension(s)));
 
-
+            bool isUrp = false;
             float visibility = 1;
             foreach (string ln in File.ReadAllLines(fn))
             {
@@ -736,12 +739,23 @@ namespace SnapObj
                     {
                         matlList.Add(currentMaterial);
                     }
-                    currentMaterial = new Material(Shader.Find("Standard (Specular setup)")); /*Shader.Find("Standard")*/
+
+#if USING_URP
+                    if (GraphicsSettings.renderPipelineAsset != null && GraphicsSettings.renderPipelineAsset is UniversalRenderPipelineAsset urpAsset)
+                    {
+                        currentMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit")); /*Shader.Find("Standard")*/
+                        isUrp = true;
+                    }
+                    else
+#endif
+                    {
+                        currentMaterial = new Material(Shader.Find("Standard (Specular setup)")); /*Shader.Find("Standard")*/
+                    }
                     currentMaterial.name = data;
                 }
                 else if (cmps[0].ToLower() == "kd")
                 {
-                    currentMaterial.SetColor("_Color", ParseColorFromCMPS(cmps, 1, visibility));
+                    currentMaterial.SetColor(isUrp ? "_BaseColor" : "_Color", ParseColorFromCMPS(cmps, 1, visibility));
                 }
                 else if (cmps[0].ToLower() == "map_kd")
                 {
@@ -752,8 +766,8 @@ namespace SnapObj
                     if (fpth != null)
                     {
                         Color tmpColor = new Color(1, 1, 1, visibility);
-                        currentMaterial.SetTexture("_MainTex", LoadTexture(fpth));
-                        currentMaterial.SetColor("_Color", tmpColor);
+                        currentMaterial.SetTexture(isUrp ? "_BaseMap": "_MainTex", LoadTexture(fpth));
+                        currentMaterial.SetColor( isUrp? "_BaseColor": "_Color", tmpColor);
                     }
                 }
                 else if (cmps[0].ToLower() == "map_d")
@@ -762,6 +776,7 @@ namespace SnapObj
                     data = data.Replace(@"\", "/");
 #endif
 
+#if !USING_URP
                     //TRANSPARENCY ENABLER
                     currentMaterial.SetFloat("_Mode", 3);
 
@@ -783,6 +798,7 @@ namespace SnapObj
                     Debug.Log("Printing tgfPath: " + fpth);
                     if (fpth != null)
                         currentMaterial.SetTexture("_MainTex", LoadTexture(fpth));
+#endif
 
                 }
                 else if (cmps[0] == "map_Bump")
@@ -812,6 +828,7 @@ namespace SnapObj
                 }
                 else if (cmps[0] == "d")
                 {
+#if !USING_URP
                     visibility = float.Parse(cmps[1]);
                     if (visibility < 1)
                     {
@@ -831,7 +848,8 @@ namespace SnapObj
                         visibility = Mathf.Clamp(visibility, 0, 0.9f);
                         temp.a = visibility;
                         currentMaterial.SetColor("_Color", temp);
-                    }
+                }
+#endif
 
                 }
                 else if (cmps[0] == "Ns")
@@ -848,9 +866,9 @@ namespace SnapObj
             return LoadTexturesToSystem(mtlFileDirectory, matlList, allTextures);
         }
 
-        #endregion
+#endregion
 
-        #region Static Utils
+#region Static Utils
 
         public static Color ParseColorFromCMPS(string[] cmps, float scalar = 1.0f, float visibility = 1f)
         {
@@ -1004,7 +1022,7 @@ namespace SnapObj
             }
             return result;
         }
-        #endregion
+#endregion
 
     }
 

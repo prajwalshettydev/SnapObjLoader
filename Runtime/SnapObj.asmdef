@@ -1,3 +1,13 @@
 {
-	"name": "SnapObj"
+	"name": "SnapObj",
+	"references": [
+        "Unity.RenderPipelines.Universal.Runtime"
+	],
+    "versionDefines": [
+        {
+            "name": "com.unity.render-pipelines.universal",
+            "expression": "7.3.1",
+            "define": "USING_URP"
+        }
+	]
 }
